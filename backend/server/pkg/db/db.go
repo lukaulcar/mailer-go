@@ -1034,12 +1034,11 @@ func (d *DB) CreateMailbox(domain, local, password, kind string) (*models.Mailbo
 	}
 
 	cleanKind := models.MailboxKind(kind)
-	if cleanKind != models.MailboxKindSendOnly && cleanKind != models.MailboxKindCatchAll {
-		cleanKind = models.MailboxKindStandard
-	}
-
-	if cleanKind == models.MailboxKindCatchAll {
+	if cleanLocal == "catch-all" || cleanKind == models.MailboxKindCatchAll {
+		cleanKind = models.MailboxKindCatchAll
 		cleanLocal = "catch-all"
+	} else if cleanKind != models.MailboxKindSendOnly {
+		cleanKind = models.MailboxKindStandard
 	}
 
 	address := fmt.Sprintf("%s@%s", cleanLocal, cleanDomain)
@@ -1291,7 +1290,9 @@ func (d *DB) FindDeliveryMailboxes(toAddress string) ([]*models.Mailbox, error) 
 		row := d.db.QueryRow(`
 			SELECT id, address, display_name, domain, password_hash, kind, enabled, used_bytes, quota_bytes, created_at, updated_at
 			FROM mailboxes
-			WHERE domain = ? COLLATE NOCASE AND kind = 'catch-all' AND enabled = 1
+			WHERE domain = ? COLLATE NOCASE AND (kind = 'catch-all' OR address = ('catch-all@' || domain) COLLATE NOCASE) AND enabled = 1
+			ORDER BY (CASE WHEN kind = 'catch-all' THEN 1 ELSE 2 END)
+			LIMIT 1
 		`, domain)
 		if err := row.Scan(
 			&catchAll.ID, &catchAll.Address, &catchAll.DisplayName, &catchAll.Domain, &passHash, &kindStr,

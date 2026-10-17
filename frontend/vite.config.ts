@@ -9,10 +9,10 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://localhost:8087',
-      '/v1': 'http://localhost:8087',
+      '/api': 'http://localhost:8082',
+      '/v1': 'http://localhost:8082',
       '/ws': {
-        target: 'ws://localhost:8087',
+        target: 'ws://localhost:8082',
         ws: true,
       },
     },

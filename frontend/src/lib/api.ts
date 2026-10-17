@@ -632,10 +632,25 @@ function ensureLiveWS() {
   if (sharedLiveWS && (sharedLiveWS.readyState === WebSocket.OPEN || sharedLiveWS.readyState === WebSocket.CONNECTING)) {
     return;
   }
-  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const activeToken = getAuthToken() || getActiveMailboxToken() || "";
-  const tokenQuery = activeToken ? `?token=${encodeURIComponent(activeToken)}` : "";
-  const wsUrl = `${protocol}//${window.location.host}/ws/live${tokenQuery}`;
+  if (!activeToken) {
+    if (sharedLiveWS) {
+      sharedLiveWS.close();
+      sharedLiveWS = null;
+    }
+    return;
+  }
+
+  let base = API_BASE_URL;
+  if (base) {
+    base = base.replace(/^http:\/\//i, "ws://").replace(/^https:\/\//i, "wss://");
+  } else {
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    base = `${protocol}//${window.location.host}`;
+  }
+  const tokenQuery = `?token=${encodeURIComponent(activeToken)}`;
+  const wsUrl = `${base}/ws/live${tokenQuery}`;
+
   try {
     sharedLiveWS = new WebSocket(wsUrl);
     sharedLiveWS.onmessage = (e) => {
@@ -651,6 +666,8 @@ function ensureLiveWS() {
     sharedLiveWS.onclose = () => {
       sharedLiveWS = null;
       if (liveListeners.size > 0 && !reconnectTimer) {
+        const token = getAuthToken() || getActiveMailboxToken() || "";
+        if (!token) return;
         reconnectTimer = setTimeout(() => {
           reconnectTimer = null;
           ensureLiveWS();
@@ -660,6 +677,8 @@ function ensureLiveWS() {
     sharedLiveWS.onerror = () => {};
   } catch {
     if (liveListeners.size > 0 && !reconnectTimer) {
+      const token = getAuthToken() || getActiveMailboxToken() || "";
+      if (!token) return;
       reconnectTimer = setTimeout(() => {
         reconnectTimer = null;
         ensureLiveWS();

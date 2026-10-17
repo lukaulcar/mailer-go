@@ -136,6 +136,7 @@ func (s *APIServer) isAdmin(u *usermanager.User) bool {
 
 func (s *APIServer) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/ws/live", s.handleLiveWS)
+	mux.HandleFunc("/v1/stream", s.handleLiveWS)
 
 	mux.HandleFunc("/api/auth/signup", s.handleAuthSignup)
 	mux.HandleFunc("/api/auth/login", s.handleAuthLogin)
@@ -1024,6 +1025,19 @@ func (s *APIServer) authenticateApiKeyAnywhere(raw string) *models.ApiKey {
 	if s.db != nil {
 		if k, err := s.db.AuthenticateApiKey(clean); err == nil && k != nil {
 			return k
+		}
+	}
+	if s.userMgr != nil {
+		users, err := s.userMgr.ListUsers()
+		if err == nil {
+			for _, u := range users {
+				udb, err := s.userMgr.GetUserDB(u.ID)
+				if err == nil && udb != nil && udb != s.db {
+					if k, err := udb.AuthenticateApiKey(clean); err == nil && k != nil {
+						return k
+					}
+				}
+			}
 		}
 	}
 	return nil
@@ -3275,7 +3289,15 @@ func extractBearerToken(r *http.Request) string {
 	}
 
 	if r.Method == http.MethodGet {
-		return strings.TrimSpace(r.URL.Query().Get("token"))
+		if t := strings.TrimSpace(r.URL.Query().Get("token")); t != "" {
+			return t
+		}
+		if k := strings.TrimSpace(r.URL.Query().Get("api_key")); k != "" {
+			return k
+		}
+		if k := strings.TrimSpace(r.URL.Query().Get("key")); k != "" {
+			return k
+		}
 	}
 	return ""
 }
@@ -3445,6 +3467,21 @@ func (s *APIServer) handleLiveWS(w http.ResponseWriter, r *http.Request) {
 			cleanMbx := strings.ToLower(mbxAddr)
 			s.liveHub.HandleWSWithFilter(w, r, func(event *models.LiveEvent) bool {
 				return strings.ToLower(event.Address) == cleanMbx
+			})
+			return
+		}
+
+		if key := s.authenticateApiKeyAnywhere(token); key != nil {
+			s.liveHub.HandleWSWithFilter(w, r, func(event *models.LiveEvent) bool {
+				if event.Address == "" {
+					return true
+				}
+				parts := strings.Split(event.Address, "@")
+				domain := ""
+				if len(parts) == 2 {
+					domain = parts[1]
+				}
+				return key.Covers(domain, event.Address)
 			})
 			return
 		}

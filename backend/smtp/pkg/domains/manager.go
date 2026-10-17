@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/mail"
 	"strings"
 	"sync"
 
@@ -339,29 +338,7 @@ func (dm *DomainManager) IsRecipientAllowed(recipient string) (bool, string) {
 		return false, domain
 	}
 
-	aliasesList := dm.aliases[domain]
-	if len(aliasesList) == 0 {
-		return true, domain
-	}
-
-	cleanRecipient := strings.ToLower(strings.TrimSpace(recipient))
-	if parsed, err := mail.ParseAddress(cleanRecipient); err == nil {
-		cleanRecipient = strings.ToLower(parsed.Address)
-	} else {
-		cleanRecipient = strings.Trim(cleanRecipient, "<> ")
-	}
-
-	for _, a := range aliasesList {
-		if !a.IsActive {
-			continue
-		}
-		cleanAddr := strings.ToLower(strings.TrimSpace(a.Address))
-		if cleanAddr == cleanRecipient || cleanAddr == "*@"+domain || cleanAddr == "*" {
-			return true, domain
-		}
-	}
-
-	return false, domain
+	return true, domain
 }
 
 func (dm *DomainManager) ListDomains() []string {
