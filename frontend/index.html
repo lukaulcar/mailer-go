@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MailerGo — Self-hosted email infrastructure (Go + React)</title>
+    <meta
+      name="description"
+      content="MailerGo is MIT-licensed, self-hosted email: domains with live DNS checks, mailboxes with webmail, templates, scoped API keys and webhooks. One POST /v1/send."
+    />
+    <meta name="keywords" content="self-hosted email, open source email server, SMTP server Go, transactional email API, webmail, DKIM SPF DMARC, email infrastructure" />
+    <meta name="author" content="Luka Ulcar" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://mailer.lukaulcar.com/" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MailerGo" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://mailer.lukaulcar.com/" />
+    <meta property="og:title" content="MailerGo — Self-hosted email infrastructure" />
+    <meta
+      property="og:description"
+      content="Domains with live DNS verification, mailboxes with webmail, templates, scoped API keys, webhooks. MIT licensed. Go + React."
+    />
+    <meta property="og:image" content="https://mailer.lukaulcar.com/og.svg" />
+    <meta property="og:image:alt" content="MailerGo — self-hosted email infrastructure" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MailerGo — Self-hosted email infrastructure" />
+    <meta
+      name="twitter:description"
+      content="Open-source SMTP + control plane. Domains, mailboxes, templates, API keys, webhooks. MIT licensed."
+    />
+    <meta name="twitter:image" content="https://mailer.lukaulcar.com/og.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "MailerGo",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, Web",
+        "url": "https://mailer.lukaulcar.com/",
+        "author": { "@type": "Person", "name": "Luka Ulcar", "url": "https://lukaulcar.com" },
+        "license": "https://opensource.org/licenses/MIT",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "MIT-licensed self-hosted email infrastructure: Go SMTP edge with SPF/DKIM/DMARC, domains with live DNS verification, mailboxes with webmail, templates, scoped API keys, webhooks, and a POST /v1/send API."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is MailerGo?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Open-source mail hosting built with Go and React: an SMTP service for receiving and sending, plus a dashboard for domains, mailboxes, templates, API keys and webhooks." }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I send email from code?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Create a scoped API key for a mailbox or domain, then POST to /v1/send with from, to, and either subject and body, or a template name with vars." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there webmail?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Standard mailboxes sign in with email and password and can read inbox and sent mail, search, star and reply." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I move to my own server later?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Export your data as a .zip from the dashboard and use it on your own instance." }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: #09090b;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv11", "ss01";
+  overflow-x: clip;
+}
+
+::selection {
+  background: #09090b;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
+
+:focus-visible {
+  outline: 2px solid #09090b;
+  outline-offset: 2px;
+}
+
+button,
+[role="button"],
+input[type="checkbox"],
+label {
+  cursor: pointer;
+}
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
+
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+.faq-answer.open {
+  grid-template-rows: 1fr;
+}
+.faq-answer > div {
+  overflow: hidden;
+}
+
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(9 9 11 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(9 9 11 / 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.mask-fade-y {
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 55%, transparent 100%);
+}
+
+
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(260%);
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue {
+    animation: none;
+  }
+}
+
+
+@keyframes preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.preview-in {
+  animation: preview-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .preview-in {
+    animation: none;
+  }
+}
+
+
+.font-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+
+.html-code-editor {
+  background-color: transparent !important;
+  color: #e2e8f0;
+}
+
+.code-editor-textarea {
+  outline: none !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.code-editor-textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+.code-editor-textarea::selection {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+
+
+.html-code-editor .token.comment,
+.html-code-editor .token.prolog {
+  color: #64748b;
+  font-style: italic;
+}
+
+.html-code-editor .token.doctype,
+.html-code-editor .token.doctype-tag {
+  color: #c084fc;
+  font-weight: 600;
+}
+
+.html-code-editor .token.punctuation {
+  color: #94a3b8;
+}
+
+.html-code-editor .token.tag {
+  color: #38bdf8;
+  font-weight: 500;
+}
+
+.html-code-editor .token.tag > .token.tag {
+  color: #38bdf8;
+}
+
+.html-code-editor .token.tag > .token.punctuation {
+  color: #64748b;
+}
+
+.html-code-editor .token.attr-name {
+  color: #a78bfa;
+}
+
+.html-code-editor .token.attr-value,
+.html-code-editor .token.string {
+  color: #4ade80;
+}
+
+.html-code-editor .token.attr-value .token.punctuation {
+  color: #86efac;
+}
+
+.html-code-editor .token.attr-value .token.attr-equals {
+  color: #64748b;
+}
+
+.html-code-editor .token.entity {
+  color: #f43f5e;
+}
+
+.html-code-editor .token.selector {
+  color: #f472b6;
+}
+
+.html-code-editor .token.property {
+  color: #38bdf8;
+}
+
+.html-code-editor .token.number,
+.html-code-editor .token.unit {
+  color: #fb923c;
+}
+
+.html-code-editor .token.template-variable,
+.html-code-editor .token.variable {
+  color: #fbbf24 !important;
+  background-color: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-weight: 600;
+  display: inline-block;
+  line-height: 1.35;
+}
+
+
+.custom-code-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.custom-code-scrollbar::-webkit-scrollbar-track {
+  background: #090d16;
+}
+.custom-code-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 5px;
+  border: 2px solid #090d16;
+}
+.custom-code-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+

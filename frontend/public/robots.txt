@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mailer.lukaulcar.com/sitemap.xml
