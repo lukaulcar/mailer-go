@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	netmail "net/mail"
-	"net/url"
 	"os"
 	"os/signal"
 	"strings"
@@ -250,45 +249,34 @@ func main() {
 	corsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 		allowedOrigin := strings.TrimSpace(cfg.CORSAllowedOrigins)
+
 		if origin != "" {
 			isAllowed := false
-			allowCredentials := false
-
 			if allowedOrigin == "" || allowedOrigin == "*" {
-
-				if u, err := url.Parse(origin); err == nil {
-					h := strings.ToLower(u.Hostname())
-					if h == "localhost" || h == "127.0.0.1" || h == "::1" || strings.EqualFold(u.Host, r.Host) {
-						isAllowed = true
-						allowCredentials = true
-					} else {
-
-						isAllowed = true
-						allowCredentials = false
-					}
-				}
+				isAllowed = true
 			} else {
 				for _, o := range strings.Split(allowedOrigin, ",") {
 					if strings.EqualFold(strings.TrimSpace(o), origin) {
 						isAllowed = true
-						allowCredentials = true
 						break
 					}
 				}
 			}
 
 			if isAllowed {
-				if allowCredentials {
-					w.Header().Set("Access-Control-Allow-Origin", origin)
-					w.Header().Set("Access-Control-Allow-Credentials", "true")
-					w.Header().Set("Vary", "Origin")
-				} else {
-					w.Header().Set("Access-Control-Allow-Origin", "*")
-				}
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
+				w.Header().Add("Vary", "Origin")
 			}
 		}
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+
+		allowHeaders := strings.TrimSpace(r.Header.Get("Access-Control-Request-Headers"))
+		if allowHeaders == "" {
+			allowHeaders = "Content-Type, Authorization, X-API-Key, X-Requested-With"
+		}
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
+		w.Header().Set("Access-Control-Allow-Headers", allowHeaders)
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Type, Content-Length, Authorization")
 		w.Header().Set("Access-Control-Max-Age", "86400")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
