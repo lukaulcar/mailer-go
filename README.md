@@ -1,6 +1,8 @@
 # mailer-go
 
-A self-hosted mail server and webmail client written in Go and React.
+A self-hosted mail server and webmail client written in Go and React. 
+
+A live instance runs at [mailer.lukaulcar.com](https://mailer.lukaulcar.com).
 
 Self-hosting email normally means gluing together Postfix, Dovecot, SpamAssassin, a database and Roundcube, then keeping the whole thing patched. mailer-go takes a different route. It splits the mail system into a small public SMTP edge and a private backend, connects the two over an encrypted tunnel, and ships a webmail client plus a REST API for transactional mail.
 
